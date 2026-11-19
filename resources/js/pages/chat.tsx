@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import { useState } from 'react';
 import { Composer } from '@/components/chat/composer';
+import { EmptyState } from '@/components/chat/empty-state';
 import { MessageList } from '@/components/chat/message-list';
 import type { ChatMessage } from '@/components/chat/message-list';
 import { index } from '@/routes/chat';
@@ -24,7 +25,11 @@ export default function Chat() {
         <>
             <Head title="Chat" />
             <div className="flex h-[calc(100svh-6rem)] flex-col">
-                <MessageList messages={messages} />
+                {messages.length ? (
+                    <MessageList messages={messages} />
+                ) : (
+                    <EmptyState onPick={send} />
+                )}
                 <Composer onSend={send} />
             </div>
         </>
