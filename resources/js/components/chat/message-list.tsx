@@ -1,4 +1,5 @@
 import type { ChatStatus, UIMessage } from 'ai';
+import { useEffect, useRef } from 'react';
 import { Markdown } from '@/components/chat/markdown';
 import { Thinking } from '@/components/chat/thinking';
 
@@ -16,6 +17,13 @@ export function MessageList({
     messages: UIMessage[];
     status: ChatStatus;
 }) {
+    const end = useRef<HTMLDivElement>(null);
+
+    // New words arrive? Keep the bottom in view.
+    useEffect(() => {
+        end.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
     return (
         <div className="flex-1 overflow-y-auto">
             <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
@@ -33,6 +41,7 @@ export function MessageList({
                 )}
                 {/* Sent, but no words back yet. */}
                 {status === 'submitted' && <Thinking />}
+                <div ref={end} />
             </div>
         </div>
     );
