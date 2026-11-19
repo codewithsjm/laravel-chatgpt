@@ -1,4 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
+import { ChatActions } from '@/components/chat-actions';
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -31,6 +32,7 @@ export function NavChats() {
                                 <span>{conversation.title}</span>
                             </Link>
                         </SidebarMenuButton>
+                        <ChatActions conversation={conversation} />
                     </SidebarMenuItem>
                 ))}
             </SidebarMenu>
