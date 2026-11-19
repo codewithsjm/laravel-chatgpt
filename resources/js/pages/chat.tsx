@@ -26,6 +26,7 @@ function Chat({ id, messages: saved }: Props) {
             api: stream.url(),
             headers: xsrfHeader,
         }),
+        onFinish: () => router.reload({ only: ['conversations'] }),
     });
 
     function send(text: string) {
