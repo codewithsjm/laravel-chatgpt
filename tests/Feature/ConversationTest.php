@@ -43,6 +43,22 @@ test('a saved chat opens with its messages', function () {
     );
 });
 
+test('you can rename and delete your chat, but not anyone else\'s', function () {
+    $id = (string) Str::uuid7();
+    $owner = User::factory()->create();
+    $this->actingAs($owner)->post('/chat/stream', say($id, 'Hi, I am Neema'))->streamedContent();
+
+    $stranger = User::factory()->create();
+    $this->actingAs($stranger)->patch("/chat/{$id}", ['title' => 'Mine now'])->assertNotFound();
+    $this->actingAs($stranger)->delete("/chat/{$id}")->assertNotFound();
+
+    $this->actingAs($owner)->patch("/chat/{$id}", ['title' => 'Arusha plans']);
+    expect(Conversation::find($id)->title)->toBe('Arusha plans');
+
+    $this->actingAs($owner)->delete("/chat/{$id}")->assertRedirect('/chat');
+    expect(Conversation::find($id))->toBeNull();
+});
+
 test('nobody else can open or continue your chat', function () {
     Assistant::fake(['Karibu Neema!']);
     $id = (string) Str::uuid7();
