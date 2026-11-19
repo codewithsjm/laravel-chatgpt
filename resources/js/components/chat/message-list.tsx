@@ -1,4 +1,5 @@
 import type { ChatStatus, UIMessage } from 'ai';
+import { Thinking } from '@/components/chat/thinking';
 
 // A message is made of parts: text, files, sources... For now, the text.
 function textOf(message: UIMessage) {
@@ -31,6 +32,8 @@ export function MessageList({
                         </div>
                     ),
                 )}
+                {/* Sent, but no words back yet. */}
+                {status === 'submitted' && <Thinking />}
             </div>
         </div>
     );

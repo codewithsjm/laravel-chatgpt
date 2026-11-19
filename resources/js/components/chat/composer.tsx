@@ -2,11 +2,17 @@ import { ArrowUp } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-export function Composer({ onSend }: { onSend: (text: string) => void }) {
+export function Composer({
+    onSend,
+    busy,
+}: {
+    onSend: (text: string) => void;
+    busy: boolean;
+}) {
     const [text, setText] = useState('');
 
     function submit() {
-        if (!text.trim()) return;
+        if (!text.trim() || busy) return;
         onSend(text.trim());
         setText('');
     }
@@ -38,7 +44,7 @@ export function Composer({ onSend }: { onSend: (text: string) => void }) {
                 type="submit"
                 size="icon"
                 className="rounded-full"
-                disabled={!text.trim()}
+                disabled={!text.trim() || busy}
             >
                 <ArrowUp />
             </Button>

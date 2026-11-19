@@ -26,7 +26,7 @@ export default function Chat() {
                 ) : (
                     <EmptyState onPick={send} />
                 )}
-                <Composer onSend={send} />
+                <Composer onSend={send} busy={status !== 'ready'} />
             </div>
         </>
     );
