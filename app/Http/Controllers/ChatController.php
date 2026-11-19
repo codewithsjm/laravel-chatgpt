@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Ai\Agents\Assistant;
+use App\Ai\Agents\TitleWriter;
 use App\Models\Conversation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -48,6 +49,8 @@ class ChatController extends Controller
         // Somebody else's conversation? No.
         abort_if($conversation && ! $conversation->participant->is($user), 403);
 
+        $isNew = $conversation === null;
+
         $conversation ??= $user->conversations()->create([
             'id' => $request->id,
             'title' => Str::limit($chat->message()?->content ?? 'New chat', 40),
@@ -56,6 +59,14 @@ class ChatController extends Controller
         return (new Assistant)
             ->continue($conversation->id, as: $user)
             ->stream($chat)
+            ->then(function () use ($isNew, $conversation, $chat) {
+                // First answer done: name the chat. If that fails, keep the old title.
+                if ($isNew) {
+                    rescue(fn () => $conversation->update([
+                        'title' => Str::limit((new TitleWriter)->prompt($chat->message()->content)->text, 60),
+                    ]));
+                }
+            })
             ->usingVercelDataProtocol($chat->messageId());
     }
 }

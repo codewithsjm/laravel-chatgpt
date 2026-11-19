@@ -1,6 +1,7 @@
 <?php
 
 use App\Ai\Agents\Assistant;
+use App\Ai\Agents\TitleWriter;
 use App\Models\Conversation;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -14,6 +15,8 @@ function say(string $id, string $text): array
     ]]];
 }
 
+beforeEach(fn () => TitleWriter::fake(['Meeting Neema']));
+
 test('the first message saves the conversation', function () {
     Assistant::fake(['Karibu Neema!']);
     $user = User::factory()->create();
@@ -22,7 +25,7 @@ test('the first message saves the conversation', function () {
     $this->actingAs($user)->post('/chat/stream', say($id, 'Hi, I am Neema'))->streamedContent();
 
     $conversation = Conversation::findOrFail($id);
-    expect($conversation->title)->toBe('Hi, I am Neema')
+    expect($conversation->title)->toBe('Meeting Neema')
         ->and($conversation->participant->is($user))->toBeTrue()
         ->and($conversation->messages()->count())->toBe(2);
 });
