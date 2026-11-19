@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Ai\Agents\Assistant;
 use App\Ai\Agents\TitleWriter;
 use App\Models\Conversation;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -34,6 +35,24 @@ class ChatController extends Controller
                 $conversation->messages()->orderBy('id')->get()
             ),
         ]);
+    }
+
+    public function update(Request $request, string $conversation): RedirectResponse
+    {
+        $request->user()->conversations()->findOrFail($conversation)->update(
+            $request->validate(['title' => ['required', 'string', 'max:100']])
+        );
+
+        return back();
+    }
+
+    public function destroy(Request $request, string $conversation): RedirectResponse
+    {
+        $conversation = $request->user()->conversations()->findOrFail($conversation);
+        $conversation->messages()->delete();
+        $conversation->delete();
+
+        return to_route('chat.index');
     }
 
     public function stream(Request $request): StreamableAgentResponse
