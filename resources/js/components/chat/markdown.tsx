@@ -2,6 +2,7 @@ import 'highlight.js/styles/github-dark.css';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
+import { CodeBlock } from '@/components/chat/code-block';
 
 export function Markdown({ children }: { children: string }) {
     return (
@@ -9,6 +10,7 @@ export function Markdown({ children }: { children: string }) {
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeHighlight]}
+                components={{ pre: CodeBlock }}
             >
                 {children}
             </ReactMarkdown>
