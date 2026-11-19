@@ -1,4 +1,5 @@
 import type { ChatStatus, UIMessage } from 'ai';
+import { Markdown } from '@/components/chat/markdown';
 import { Thinking } from '@/components/chat/thinking';
 
 // A message is made of parts: text, files, sources... For now, the text.
@@ -27,9 +28,7 @@ export function MessageList({
                             {textOf(message)}
                         </div>
                     ) : (
-                        <div key={message.id} className="leading-7">
-                            {textOf(message)}
-                        </div>
+                        <Markdown key={message.id}>{textOf(message)}</Markdown>
                     ),
                 )}
                 {/* Sent, but no words back yet. */}
