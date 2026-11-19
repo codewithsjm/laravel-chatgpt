@@ -1,32 +1,28 @@
+import { useChat } from '@ai-sdk/react';
 import { Head } from '@inertiajs/react';
-import { useState } from 'react';
+import { DefaultChatTransport } from 'ai';
 import { Composer } from '@/components/chat/composer';
 import { EmptyState } from '@/components/chat/empty-state';
 import { MessageList } from '@/components/chat/message-list';
-import type { ChatMessage } from '@/components/chat/message-list';
-import { index } from '@/routes/chat';
+import { xsrfHeader } from '@/lib/csrf';
+import { index, stream } from '@/routes/chat';
 
 export default function Chat() {
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const { messages, sendMessage, status } = useChat({
+        transport: new DefaultChatTransport({
+            api: stream.url(),
+            headers: xsrfHeader,
+        }),
+    });
 
-    function send(text: string) {
-        setMessages((all) => [
-            ...all,
-            { id: crypto.randomUUID(), role: 'user', text },
-            {
-                id: crypto.randomUUID(),
-                role: 'assistant',
-                text: 'A real answer comes in part 3.',
-            },
-        ]);
-    }
+    const send = (text: string) => sendMessage({ text });
 
     return (
         <>
             <Head title="Chat" />
             <div className="flex h-[calc(100svh-6rem)] flex-col">
                 {messages.length ? (
-                    <MessageList messages={messages} />
+                    <MessageList messages={messages} status={status} />
                 ) : (
                     <EmptyState onPick={send} />
                 )}
