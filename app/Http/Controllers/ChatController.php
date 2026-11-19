@@ -22,6 +22,19 @@ class ChatController extends Controller
         ]);
     }
 
+    public function show(Request $request, string $conversation): Response
+    {
+        // Only your own conversations: anything else is a 404.
+        $conversation = $request->user()->conversations()->findOrFail($conversation);
+
+        return Inertia::render('chat', [
+            'id' => $conversation->id,
+            'messages' => Vercel::toUiMessages(
+                $conversation->messages()->orderBy('id')->get()
+            ),
+        ]);
+    }
+
     public function stream(Request $request): StreamableAgentResponse
     {
         $request->validate(['id' => ['required', 'uuid']]);

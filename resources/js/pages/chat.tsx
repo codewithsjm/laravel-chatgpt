@@ -1,21 +1,41 @@
 import { useChat } from '@ai-sdk/react';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { DefaultChatTransport } from 'ai';
+import type { UIMessage } from 'ai';
 import { Composer } from '@/components/chat/composer';
 import { EmptyState } from '@/components/chat/empty-state';
 import { MessageList } from '@/components/chat/message-list';
 import { xsrfHeader } from '@/lib/csrf';
-import { index, stream } from '@/routes/chat';
+import { index, show, stream } from '@/routes/chat';
 
-export default function Chat() {
+type Props = {
+    id: string;
+    messages: UIMessage[];
+};
+
+export default function ChatPage(props: Props) {
+    // Another conversation? Start a fresh chat on screen.
+    return <Chat key={props.id} {...props} />;
+}
+
+function Chat({ id, messages: saved }: Props) {
     const { messages, sendMessage, status } = useChat({
+        id,
+        messages: saved,
         transport: new DefaultChatTransport({
             api: stream.url(),
             headers: xsrfHeader,
         }),
     });
 
-    const send = (text: string) => sendMessage({ text });
+    function send(text: string) {
+        void sendMessage({ text });
+
+        // The first message turns /chat into /chat/{id}, keeping the chat on screen.
+        if (!messages.length) {
+            router.replace({ url: show.url(id), preserveState: true });
+        }
+    }
 
     return (
         <>
@@ -32,6 +52,6 @@ export default function Chat() {
     );
 }
 
-Chat.layout = {
+ChatPage.layout = {
     breadcrumbs: [{ title: 'Chat', href: index() }],
 };
