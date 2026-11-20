@@ -1,6 +1,7 @@
 import type { ChatStatus, UIMessage } from 'ai';
 import { RotateCcw } from 'lucide-react';
 import { useEffect, useRef } from 'react';
+import { ErrorNote } from '@/components/chat/error-note';
 import { Markdown } from '@/components/chat/markdown';
 import { Thinking } from '@/components/chat/thinking';
 
@@ -54,6 +55,7 @@ export function MessageList({
                     )}
                 {/* Sent, but no words back yet. */}
                 {status === 'submitted' && <Thinking />}
+                {status === 'error' && <ErrorNote onRetry={onRegenerate} />}
                 <div ref={end} />
             </div>
         </div>

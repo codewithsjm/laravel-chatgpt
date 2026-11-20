@@ -26,7 +26,12 @@ function Chat({ id, messages: saved }: Props) {
             api: stream.url(),
             headers: xsrfHeader,
         }),
-        onFinish: () => router.reload({ only: ['conversations'] }),
+        onFinish: ({ isError }) => {
+            // A failed first message never saved the chat, so there is nothing new to list.
+            if (!isError) {
+                router.reload({ only: ['conversations'] });
+            }
+        },
     });
 
     function send(text: string) {
