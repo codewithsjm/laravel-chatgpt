@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { ErrorNote } from '@/components/chat/error-note';
 import { Markdown } from '@/components/chat/markdown';
 import { Thinking } from '@/components/chat/thinking';
+import { UserMessage } from '@/components/chat/user-message';
 
 // A message is made of parts: text, files, sources... For now, the text.
 function textOf(message: UIMessage) {
@@ -33,12 +34,7 @@ export function MessageList({
             <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8">
                 {messages.map((message) =>
                     message.role === 'user' ? (
-                        <div
-                            key={message.id}
-                            className="ml-auto max-w-[80%] rounded-3xl bg-muted px-5 py-2.5 whitespace-pre-wrap"
-                        >
-                            {textOf(message)}
-                        </div>
+                        <UserMessage key={message.id} message={message} />
                     ) : (
                         <Markdown key={message.id}>{textOf(message)}</Markdown>
                     ),
