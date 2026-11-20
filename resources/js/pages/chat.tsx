@@ -36,8 +36,8 @@ function Chat({ id, messages: saved }: Props) {
         },
     });
 
-    function send(text: string) {
-        void sendMessage({ text }, { body: { smart } });
+    function send(text: string, files?: FileList) {
+        void sendMessage({ text, files }, { body: { smart } });
 
         // The first message turns /chat into /chat/{id}, keeping the chat on screen.
         if (!messages.length) {
