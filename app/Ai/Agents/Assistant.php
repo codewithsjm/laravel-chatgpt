@@ -2,7 +2,6 @@
 
 namespace App\Ai\Agents;
 
-use Laravel\Ai\Attributes\Provider;
 use Laravel\Ai\Attributes\Timeout;
 use Laravel\Ai\Concerns\RemembersConversations;
 use Laravel\Ai\Contracts\Agent;
@@ -13,12 +12,23 @@ use Laravel\Ai\Promptable;
 use Laravel\Ai\Providers\Tools\ProviderTool;
 use Stringable;
 
-// Busy, or out of free requests? The next provider answers instead.
-#[Provider(['gemini', 'gemini-backup'])]
 #[Timeout(30)]
 class Assistant implements Agent, Conversational, HasTools
 {
     use Promptable, RemembersConversations;
+
+    public function __construct(public bool $smart = false) {}
+
+    /**
+     * Fast or smart model first. Busy, or out of free requests? The backup answers.
+     */
+    public function provider(): array
+    {
+        return [
+            'gemini' => $this->smart ? config('ai.providers.gemini.models.text.smartest') : null,
+            'gemini-backup' => null,
+        ];
+    }
 
     /**
      * Get the instructions that the agent should follow.

@@ -80,7 +80,7 @@ class ChatController extends Controller
             'title' => Str::limit($chat->message()?->content ?? 'New chat', 40),
         ]);
 
-        return (new Assistant)
+        return (new Assistant(smart: $request->boolean('smart')))
             ->continue($conversation->id, as: $user)
             ->stream($chat)
             ->then(function () use ($isNew, $conversation, $chat) {

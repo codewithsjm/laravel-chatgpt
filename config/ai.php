@@ -107,6 +107,7 @@ return [
             'models' => [
                 'text' => [
                     'default' => env('GEMINI_MODEL', 'gemini-3.5-flash-lite'),
+                    'smartest' => env('GEMINI_SMART_MODEL', 'gemini-3.5-flash'),
                 ],
             ],
         ],
