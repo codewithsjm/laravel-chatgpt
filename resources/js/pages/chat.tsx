@@ -21,7 +21,7 @@ export default function ChatPage(props: Props) {
 
 function Chat({ id, messages: saved }: Props) {
     const [smart, setSmart] = useState(false);
-    const { messages, sendMessage, regenerate, status, stop } = useChat({
+    const { messages, sendMessage, regenerate, status, stop, error } = useChat({
         id,
         messages: saved,
         transport: new DefaultChatTransport({
@@ -53,6 +53,7 @@ function Chat({ id, messages: saved }: Props) {
                     <MessageList
                         messages={messages}
                         status={status}
+                        error={error}
                         onRegenerate={() =>
                             void regenerate({ body: { smart } })
                         }

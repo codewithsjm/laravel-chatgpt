@@ -17,10 +17,12 @@ function textOf(message: UIMessage) {
 export function MessageList({
     messages,
     status,
+    error,
     onRegenerate,
 }: {
     messages: UIMessage[];
     status: ChatStatus;
+    error?: Error;
     onRegenerate: () => void;
 }) {
     const end = useRef<HTMLDivElement>(null);
@@ -55,7 +57,9 @@ export function MessageList({
                     )}
                 {/* Sent, but no words back yet. */}
                 {status === 'submitted' && <Thinking />}
-                {status === 'error' && <ErrorNote onRetry={onRegenerate} />}
+                {status === 'error' && (
+                    <ErrorNote error={error} onRetry={onRegenerate} />
+                )}
                 <div ref={end} />
             </div>
         </div>
