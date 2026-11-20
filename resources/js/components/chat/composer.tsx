@@ -1,4 +1,4 @@
-import { ArrowUp, Square } from 'lucide-react';
+import { ArrowUp, Sparkles, Square, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -6,10 +6,14 @@ export function Composer({
     onSend,
     onStop,
     busy,
+    smart,
+    onSmartChange,
 }: {
     onSend: (text: string) => void;
     onStop: () => void;
     busy: boolean;
+    smart: boolean;
+    onSmartChange: (smart: boolean) => void;
 }) {
     const [text, setText] = useState('');
 
@@ -27,6 +31,18 @@ export function Composer({
             }}
             className="mx-auto mb-4 flex w-full max-w-3xl items-end gap-2 rounded-3xl border bg-background p-2 shadow-sm"
         >
+            <button
+                type="button"
+                onClick={() => onSmartChange(!smart)}
+                className="flex items-center gap-1.5 rounded-full border px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
+            >
+                {smart ? (
+                    <Sparkles className="size-4" />
+                ) : (
+                    <Zap className="size-4" />
+                )}
+                {smart ? 'Smart' : 'Fast'}
+            </button>
             <textarea
                 name="message"
                 value={text}

@@ -2,6 +2,7 @@ import { useChat } from '@ai-sdk/react';
 import { Head, router } from '@inertiajs/react';
 import { DefaultChatTransport } from 'ai';
 import type { UIMessage } from 'ai';
+import { useState } from 'react';
 import { Composer } from '@/components/chat/composer';
 import { EmptyState } from '@/components/chat/empty-state';
 import { MessageList } from '@/components/chat/message-list';
@@ -19,6 +20,7 @@ export default function ChatPage(props: Props) {
 }
 
 function Chat({ id, messages: saved }: Props) {
+    const [smart, setSmart] = useState(false);
     const { messages, sendMessage, regenerate, status, stop } = useChat({
         id,
         messages: saved,
@@ -35,7 +37,7 @@ function Chat({ id, messages: saved }: Props) {
     });
 
     function send(text: string) {
-        void sendMessage({ text });
+        void sendMessage({ text }, { body: { smart } });
 
         // The first message turns /chat into /chat/{id}, keeping the chat on screen.
         if (!messages.length) {
@@ -51,7 +53,9 @@ function Chat({ id, messages: saved }: Props) {
                     <MessageList
                         messages={messages}
                         status={status}
-                        onRegenerate={() => void regenerate()}
+                        onRegenerate={() =>
+                            void regenerate({ body: { smart } })
+                        }
                     />
                 ) : (
                     <EmptyState onPick={send} />
@@ -60,6 +64,8 @@ function Chat({ id, messages: saved }: Props) {
                     onSend={send}
                     onStop={stop}
                     busy={status === 'submitted' || status === 'streaming'}
+                    smart={smart}
+                    onSmartChange={setSmart}
                 />
             </div>
         </>
