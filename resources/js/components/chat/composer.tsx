@@ -1,12 +1,14 @@
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, Square } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 export function Composer({
     onSend,
+    onStop,
     busy,
 }: {
     onSend: (text: string) => void;
+    onStop: () => void;
     busy: boolean;
 }) {
     const [text, setText] = useState('');
@@ -40,14 +42,27 @@ export function Composer({
                 placeholder="Ask anything"
                 className="field-sizing-content max-h-48 flex-1 resize-none bg-transparent px-3 py-2 outline-none"
             />
-            <Button
-                type="submit"
-                size="icon"
-                className="rounded-full"
-                disabled={!text.trim() || busy}
-            >
-                <ArrowUp />
-            </Button>
+            {busy ? (
+                <Button
+                    type="button"
+                    size="icon"
+                    className="rounded-full"
+                    aria-label="Stop"
+                    onClick={onStop}
+                >
+                    <Square className="fill-current" />
+                </Button>
+            ) : (
+                <Button
+                    type="submit"
+                    size="icon"
+                    className="rounded-full"
+                    aria-label="Send"
+                    disabled={!text.trim()}
+                >
+                    <ArrowUp />
+                </Button>
+            )}
         </form>
     );
 }

@@ -19,7 +19,7 @@ export default function ChatPage(props: Props) {
 }
 
 function Chat({ id, messages: saved }: Props) {
-    const { messages, sendMessage, status } = useChat({
+    const { messages, sendMessage, status, stop } = useChat({
         id,
         messages: saved,
         transport: new DefaultChatTransport({
@@ -47,7 +47,11 @@ function Chat({ id, messages: saved }: Props) {
                 ) : (
                     <EmptyState onPick={send} />
                 )}
-                <Composer onSend={send} busy={status !== 'ready'} />
+                <Composer
+                    onSend={send}
+                    onStop={stop}
+                    busy={status === 'submitted' || status === 'streaming'}
+                />
             </div>
         </>
     );
