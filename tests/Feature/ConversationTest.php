@@ -59,6 +59,20 @@ test('you can rename and delete your chat, but not anyone else\'s', function () 
     expect(Conversation::find($id))->toBeNull();
 });
 
+test('try again replaces the last answer', function () {
+    Assistant::fake(['First answer', 'Better answer']);
+    $user = User::factory()->create();
+    $id = (string) Str::uuid7();
+    $first = say($id, 'Hi, I am Neema');
+    $this->actingAs($user)->post('/chat/stream', $first)->streamedContent();
+
+    // useChat resends the chat without the last answer.
+    $this->post('/chat/stream', [...$first, 'trigger' => 'regenerate-message'])->streamedContent();
+
+    $messages = Conversation::find($id)->messages()->orderBy('id')->pluck('content');
+    expect($messages->all())->toBe(['Hi, I am Neema', 'Better answer']);
+});
+
 test('nobody else can open or continue your chat', function () {
     Assistant::fake(['Karibu Neema!']);
     $id = (string) Str::uuid7();
