@@ -68,6 +68,11 @@ class ChatController extends Controller
         // Somebody else's conversation? No.
         abort_if($conversation && ! $conversation->participant->is($user), 403);
 
+        // "Try again": forget the saved answer. The question comes back with this request.
+        if ($conversation && $request->input('trigger') === 'regenerate-message') {
+            $conversation->keepFirst(count($request->input('messages', [])) - 1);
+        }
+
         $isNew = $conversation === null;
 
         $conversation ??= $user->conversations()->create([

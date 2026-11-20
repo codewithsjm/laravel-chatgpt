@@ -19,7 +19,7 @@ export default function ChatPage(props: Props) {
 }
 
 function Chat({ id, messages: saved }: Props) {
-    const { messages, sendMessage, status, stop } = useChat({
+    const { messages, sendMessage, regenerate, status, stop } = useChat({
         id,
         messages: saved,
         transport: new DefaultChatTransport({
@@ -43,7 +43,11 @@ function Chat({ id, messages: saved }: Props) {
             <Head title="Chat" />
             <div className="flex h-[calc(100svh-6rem)] flex-col">
                 {messages.length ? (
-                    <MessageList messages={messages} status={status} />
+                    <MessageList
+                        messages={messages}
+                        status={status}
+                        onRegenerate={() => void regenerate()}
+                    />
                 ) : (
                     <EmptyState onPick={send} />
                 )}
