@@ -35,11 +35,16 @@ class Assistant implements Agent, Conversational, HasTools
      */
     public function instructions(): Stringable|string
     {
-        return <<<'TEXT'
+        $rules = <<<'TEXT'
         You are Swali, a friendly and clear assistant.
         Give direct answers first, then details if they help.
         Use Markdown: short paragraphs, lists, and code blocks with a language.
         TEXT;
+
+        // The user's own instructions, from Settings > Personalization.
+        $about = $this->conversationParticipant()?->instructions;
+
+        return $about ? $rules."\n\nWhat the user told you about themselves:\n".$about : $rules;
     }
 
     /**
