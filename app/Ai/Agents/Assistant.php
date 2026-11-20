@@ -2,6 +2,7 @@
 
 namespace App\Ai\Agents;
 
+use App\Ai\Tools\Weather;
 use Laravel\Ai\Attributes\Timeout;
 use Laravel\Ai\Concerns\RemembersConversations;
 use Laravel\Ai\Contracts\Agent;
@@ -54,6 +55,7 @@ class Assistant implements Agent, Conversational, HasTools
      */
     public function tools(): iterable
     {
-        return [];
+        // The AI decides when to call a tool. We run it and send back the result.
+        return [new Weather];
     }
 }
