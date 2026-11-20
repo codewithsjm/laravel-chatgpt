@@ -111,6 +111,17 @@ return [
             ],
         ],
 
+        // Same key, lighter model: the backup when the main model is busy.
+        'gemini-backup' => [
+            'driver' => 'gemini',
+            'key' => env('GEMINI_API_KEY'),
+            'models' => [
+                'text' => [
+                    'default' => 'gemini-3.1-flash-lite',
+                ],
+            ],
+        ],
+
         'groq' => [
             'driver' => 'groq',
             'key' => env('GROQ_API_KEY'),

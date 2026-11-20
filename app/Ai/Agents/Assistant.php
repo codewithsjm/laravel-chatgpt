@@ -2,6 +2,8 @@
 
 namespace App\Ai\Agents;
 
+use Laravel\Ai\Attributes\Provider;
+use Laravel\Ai\Attributes\Timeout;
 use Laravel\Ai\Concerns\RemembersConversations;
 use Laravel\Ai\Contracts\Agent;
 use Laravel\Ai\Contracts\Conversational;
@@ -11,6 +13,9 @@ use Laravel\Ai\Promptable;
 use Laravel\Ai\Providers\Tools\ProviderTool;
 use Stringable;
 
+// Busy, or out of free requests? The next provider answers instead.
+#[Provider(['gemini', 'gemini-backup'])]
+#[Timeout(30)]
 class Assistant implements Agent, Conversational, HasTools
 {
     use Promptable, RemembersConversations;
