@@ -57,7 +57,14 @@ class ChatController extends Controller
 
     public function stream(Request $request): StreamableAgentResponse
     {
-        $request->validate(['id' => ['required', 'uuid']]);
+        $request->validate([
+            'id' => ['required', 'uuid'],
+            // Files arrive as message parts: only images and PDFs get through.
+            'messages.*.parts.*.mediaType' => [
+                'nullable',
+                'in:image/png,image/jpeg,image/webp,image/gif,application/pdf',
+            ],
+        ]);
 
         // useChat sends the whole chat; Vercel::chat() reads it.
         $chat = Vercel::chat($request);
